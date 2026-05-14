@@ -99,15 +99,34 @@ process.stdin.on('end', function() {
       // (Windows paths) using the regex /[/\\]/, then take the last segment.
       const filename = filePath.split(/[/\\]/).pop();
 
-      // STEP 5: Print the reminder to stdout.
+      // STEP 5: Print the alert to stdout.
       //
-      // stdout is what appears in the Claude Code terminal. We use
-      // process.stdout.write() instead of console.log() so we can control
-      // the newline characters precisely — one blank line before and after
-      // the message so it stands out from other terminal output.
+      // stdout is what appears in Claude Code's terminal output — and crucially,
+      // Claude reads it too. We use this to surface a structured message that
+      // Claude will present to the developer as a conversational prompt.
+      //
+      // WHY CLAUDE IS THE INTERMEDIARY
+      // Hook scripts are non-interactive: they cannot pause and wait for user
+      // input. They run, print, and exit. So instead of trying to prompt the
+      // developer directly from the script, we print a message that Claude reads
+      // and then presents as a choice in the conversation. Claude can then offer
+      // three options on our behalf: fix now, defer to the todo list, or skip.
+      //
+      // The three options Claude will present:
+      //   1. Fix now   → run /wcag-check <file> immediately
+      //   2. Defer     → run /a11y-todo add <file> to track it for later
+      //   3. Skip      → acknowledge and move on (nothing written)
+      //
+      // The separator lines make this message visually distinct in the terminal
+      // so it does not get lost in other Claude Code output.
       process.stdout.write(
-        '\na11y-guard: ' + filename + ' was modified.\n' +
-        'Run /wcag-check ' + filePath + ' to check for accessibility issues.\n'
+        '\n─────────────────────────────────────────\n' +
+        'a11y-guard: ' + filename + ' was modified.\n' +
+        'Check accessibility now, defer it, or skip:\n' +
+        '  • Fix now  → /wcag-check ' + filePath + '\n' +
+        '  • Defer    → /a11y-todo add ' + filename + ' — describe the issue\n' +
+        '  • Skip     → just say "skip" to continue\n' +
+        '─────────────────────────────────────────\n'
       );
 
     }

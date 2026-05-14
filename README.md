@@ -1,4 +1,4 @@
-# a11y-guard
+# A11y-Guard
 
 A Claude Code plugin that reviews AI-generated frontend code for accessibility issues,
 explains who is affected and how, and suggests practical fixes — without leaving your editor.
@@ -11,8 +11,7 @@ explains who is affected and how, and suggests practical fixes — without leavi
 
 ## The Problem
 
-AI coding tools (Cursor, Copilot, Claude Code) generate React and Next.js components in
-seconds. Accessibility does not come included.
+AI coding tools (Cursor, Copilot, Claude Code) generate components in seconds. Accessibility does not come included by default.
 
 These tools routinely produce the same failures:
 
@@ -28,7 +27,7 @@ Enterprise accessibility teams are often responsible for reviewing hundreds of c
 across many repositories with limited staffing. Issues discovered late — after development,
 after QA, after a legal complaint — are significantly more expensive to fix.
 
-a11y-guard shifts accessibility review earlier into the development workflow.
+A11y-Guard shifts accessibility review earlier into the development workflow.
 
 
 ---
@@ -36,10 +35,7 @@ a11y-guard shifts accessibility review earlier into the development workflow.
 
 ## Why I Built This
 
-I am hard of seeing. I rely on browser zoom, screen readers, and enlarged interfaces
-to use computers — especially at night after removing contact lenses. When a developer
-ships an inaccessible interface, it is not just a compliance problem for their company.
-It is a wall that prevents me from completing basic tasks.
+On a personal note, I am partially hard of seeing. I rely on browser zoom, screen readers, and enlarged interfaces to use computers especially at night after removing scleral contact lenses. When a developer ships an inaccessible interface, it is not just a compliance problem for their company, it is a wall that prevents users from completing basic tasks.
 
 This plugin is built from that lived experience. The goal is to make the gap between
 fast AI-generated code and accessible user experiences smaller.
@@ -91,11 +87,21 @@ Quick conversational check on a single file or pasted snippet. Responds in the c
 and keeps the conversation going — no file is written. Use this while coding to get
 immediate feedback before finishing a component.
 
-### The Hook — automatic reminders
+### The Hook — awareness without interruption
 
-After Claude Code edits any frontend file, a hook fires automatically and prints a
-one-line reminder to run `/wcag-check` on the modified file. The hook does not
-auto-fix anything — accessibility remediation stays in the developer's hands.
+Two hooks work together to keep accessibility visible throughout development.
+
+After Claude edits any frontend file, the first hook fires and Claude offers three
+choices: check it now with `/wcag-check`, defer it with `/a11y-todo add`, or skip it.
+If you defer, the issue is recorded in `a11y-todos.md` — a plain markdown file in your
+project root that you can read and edit manually.
+
+Before every `git commit`, the second hook surfaces any open todos as a last-call
+reminder. If everything is resolved, you see a clean confirmation. If items are open,
+they are listed so you can decide whether to fix them first or commit with known issues.
+
+Neither hook blocks your workflow. No auto-fixing. Accessibility remediation stays
+in the developer's hands.
 
 
 ---
@@ -105,16 +111,16 @@ auto-fix anything — accessibility remediation stays in the developer's hands.
 
 Both the agent and the slash command check these 8 categories:
 
-| Category | What it checks |
-|---|---|
-| Semantic HTML | Div-based buttons, missing landmark regions |
-| Keyboard accessibility | onClick without keyboard handler, broken tab order |
-| Form accessibility | Placeholder-as-label, missing error associations |
-| Screen reader support | Missing alt text, aria-hidden on focusable elements |
-| Accessible naming | Icon-only controls, unnamed buttons and links |
-| Heading structure | Skipped levels, multiple H1 elements |
-| Modal accessibility | Missing role, aria-modal, focus management, focus trap |
-| ARIA validation | Invalid or excessive ARIA usage |
+| Category               | What it checks                                         |
+| ---------------------- | ------------------------------------------------------ |
+| Semantic HTML          | Div-based buttons, missing landmark regions            |
+| Keyboard accessibility | onClick without keyboard handler, broken tab order     |
+| Form accessibility     | Placeholder-as-label, missing error associations       |
+| Screen reader support  | Missing alt text, aria-hidden on focusable elements    |
+| Accessible naming      | Icon-only controls, unnamed buttons and links          |
+| Heading structure      | Skipped levels, multiple H1 elements                   |
+| Modal accessibility    | Missing role, aria-modal, focus management, focus trap |
+| ARIA validation        | Invalid or excessive ARIA usage                        |
 
 
 ---

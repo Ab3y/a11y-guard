@@ -98,7 +98,9 @@ the exact output format you want. Reference the agent for the full version.
 check whether the modified file is relevant, print a message to stdout if it is.
 Keep it simple and always exit with code 0 so failures are silent.
 
-**Step 7** — Create `.claude/settings.json` and wire up the hook:
+**Step 7** — Create `.claude/settings.json` and wire up the hook.
+
+`PostToolUse` fires *after* a tool runs — right for file-edit alerts:
 ```json
 {
   "hooks": {
@@ -106,6 +108,23 @@ Keep it simple and always exit with code 0 so failures are silent.
       {
         "matcher": "Edit",
         "hooks": [{ "type": "command", "command": "node .claude/hooks/your-hook.js" }]
+      }
+    ]
+  }
+}
+```
+
+`PreToolUse` fires *before* a tool runs — right for pre-commit checks or blocking
+dangerous operations. a11y-guard uses this on the `Bash` matcher to surface deferred
+accessibility todos before every `git commit`. The hook inspects the command string
+and exits silently for any command that is not a git commit:
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "node .claude/hooks/pre-commit.js" }]
       }
     ]
   }
