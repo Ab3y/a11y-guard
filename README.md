@@ -68,7 +68,7 @@ repetitive mechanical part.
 ### The Agent — for audits and review sessions
 
 ```bash
-claude agent run a11y-guard
+claude agents run a11y-guard
 ```
 
 Scans every `.jsx`, `.tsx`, `.html`, `.vue`, and `.svelte` file in the project across
@@ -165,7 +165,7 @@ No `npm install` is required.
 
 ```bash
 cd your-project
-claude agent list
+claude agents list
 ```
 
 You should see `a11y-guard` in the list.
@@ -178,7 +178,7 @@ You should see `a11y-guard` in the list.
 
 **Run a full project audit:**
 ```bash
-claude agent run a11y-guard
+claude agents run a11y-guard
 ```
 This scans every frontend file and writes `a11y-report.md` to your project root.
 
@@ -190,7 +190,7 @@ This scans every frontend file and writes `a11y-report.md` to your project root.
 **Try the demo project:**
 ```bash
 cd demo
-claude agent run a11y-guard
+claude agents run a11y-guard
 ```
 The `demo/` folder contains intentional violations. You should see approximately
 18–20 findings across 6 files.

@@ -40,7 +40,7 @@ You need three files to build a working plugin.
 This is where the orchestration logic lives. The agent reads files, runs analysis,
 and produces output. You write it as a set of clear numbered steps. Claude Code
 follows those steps using real tools: Glob to find files, Read to open them, Write
-to save results, Bash to run commands. Run it with `claude agent run your-plugin`.
+to save results, Bash to run commands. Run it with `claude agents run your-plugin`.
 
 **2. The slash command file** — `.claude/commands/your-command.md`
 
@@ -133,7 +133,7 @@ and exits silently for any command that is not a git commit:
 
 **Step 8** — Verify the install:
 ```bash
-claude agent list
+claude agents list
 ```
 Your agent should appear in the list. If it does not, check the most common mistakes below.
 
@@ -142,7 +142,7 @@ Your agent should appear in the list. If it does not, check the most common mist
 ## Common mistakes
 
 **Wrong folder location.** Agents must be in `.claude/agents/`, slash commands in
-`.claude/commands/`. A file in the wrong folder will not appear in `claude agent list`
+`.claude/commands/`. A file in the wrong folder will not appear in `claude agents list`
 and will not autocomplete as a slash command. Double-check the path.
 
 **Missing or malformed frontmatter.** The `name` and `description` fields in the

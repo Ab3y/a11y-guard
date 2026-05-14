@@ -64,7 +64,7 @@ writes a structured audit report — without leaving Claude Code.
 
 The agent and slash command serve different workflows. They are not duplicates.
 
-**The agent** (`claude agent run a11y-guard`) is designed for:
+**The agent** (`claude agents run a11y-guard`) is designed for:
 - Project-wide audits across all frontend components
 - Structured reporting with a persistent a11y-report.md output file
 - Accessibility review sessions — a deliberate, dedicated audit workflow
@@ -183,9 +183,9 @@ a11y-guard/
 
 - [ ] Clone to a new temp directory
 - [ ] Follow README exactly — no undocumented steps
-- [ ] `claude agent list` shows `a11y-guard`
+- [ ] `claude agents list` shows `a11y-guard`
 - [ ] `/wcag-check demo/src/components/LoginForm.tsx` returns violations
-- [ ] `claude agent run a11y-guard` inside `demo/` finds 18+ violations, writes a11y-report.md
+- [ ] `claude agents run a11y-guard` inside `demo/` finds 18+ violations, writes a11y-report.md
 - [ ] Hook fires when Claude Code edits a `.tsx` or `.jsx` file
 - [ ] Fix anything that requires setup not in the README
 
@@ -221,7 +221,7 @@ Mix of TSX and JSX is intentional — demonstrates the plugin works with both fo
 ### 9. Record the Loom (5 minutes maximum)
 
 - [ ] 0:00–0:30 — Persona, the vibe-coded UI problem, personal motivation
-- [ ] 0:30–2:00 — Hook fires, /wcag-check Modal.tsx, claude agent run a11y-guard, open a11y-report.md
+- [ ] 0:30–2:00 — Hook fires, /wcag-check Modal.tsx, claude agents run a11y-guard, open a11y-report.md
 - [ ] 2:00–3:30 — How it was built: static analysis decision, steering Claude Code for user impact
 - [ ] 3:30–4:30 — GUIDE.md walkthrough: three-file minimum, 8-step scaffold
 - [ ] 4:30–5:00 — Repo link, what to build next (PR-diff mode)

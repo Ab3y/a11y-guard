@@ -29,7 +29,7 @@ TypeScript and JavaScript React in the same project.
 Run the agent from this directory:
 
 ```bash
-claude agent run a11y-guard
+claude agents run a11y-guard
 ```
 
 Expected output: approximately 18–20 violations across 6 files, with an `a11y-report.md`

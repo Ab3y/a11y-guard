@@ -10,7 +10,7 @@ The pre-commit hook reads `a11y-todos.md` automatically before every `git commit
 surfaces any open items as a reminder so nothing ships overlooked.
 
 For an immediate accessibility check on a file, use `/wcag-check` instead.
-For a full project audit with a persistent report, run `claude agent run a11y-guard`.
+For a full project audit with a persistent report, run `claude agents run a11y-guard`.
 
 ---
 

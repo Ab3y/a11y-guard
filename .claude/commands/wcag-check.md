@@ -16,7 +16,7 @@ Use `/wcag-check` when:
 - You are in a conversation about a specific file and want inline feedback
 - You want to paste a code snippet and ask "is this accessible?"
 
-Use `claude agent run a11y-guard` instead when:
+Use `claude agents run a11y-guard` instead when:
 - You want to audit an entire project across all frontend files
 - You need a written report file (a11y-report.md) to share with your team or store in the repo
 - You are running a formal accessibility review session
