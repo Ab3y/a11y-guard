@@ -2,221 +2,267 @@
 
 ## Overview
 
-Build a Claude Code plugin for a specific enterprise developer persona, submit a plugin repo, a one-page "build your own" guide, and a ≤5-minute Loom demo.
+Build a Claude Code plugin for a specific enterprise developer persona. Submit a plugin
+repo, a one-page "build your own" guide, and a five-minute Loom demo.
 
 ---
 
 ## Chosen Persona
 
-**Security Engineer triaging dependency CVEs**
+**Enterprise Accessibility QA Engineer**
 
-- Works at a mid-to-large company with many Node.js / Python services
-- Runs `npm audit` / `pip-audit` regularly but drowns in output
-- Needs to decide: patch now, accept risk, or escalate — for each finding
-- Pain: copy-pasting CVE IDs into NVD, cross-referencing GHSA, writing triage notes by hand
+This person is responsible for reviewing React and Next.js applications built by
+fast-moving product teams that use AI coding tools such as Cursor, Copilot, and
+Claude Code.
+
+They are often:
+- Overwhelmed by volume — reviewing hundreds of components across many repositories
+- Brought in too late — after development is complete, right before a release
+- Manually identifying the same repeating violations across every pull request
+- Trying to educate developers while maintaining release velocity
+- Unable to scale to cover every AI-generated component individually
+
+**The staffing reality:** Enterprise accessibility teams are often a single specialist
+or a very small group responsible for an entire product organisation. a11y-guard reduces
+repetitive first-pass review so specialists can focus on the higher-complexity usability
+and assistive technology testing that requires human judgment and lived experience.
+
+**Personal motivation:** The author is hard of seeing and relies on browser zoom,
+screen readers, and enlarged interfaces — especially at night after removing contact
+lenses. Poor accessibility directly impacts productivity. This plugin is built from
+that lived experience, not from an abstract concern.
+
+---
+
+## Plugin Scope
+
+**Plugin name:** `a11y-guard`
+
+**One sentence description:**
+Scans frontend components for WCAG 2.1 AA violations, maps each finding to its
+criterion, explains who is affected and how, suggests the minimal code fix, and
+writes a structured audit report — without leaving Claude Code.
+
+**What this plugin is NOT trying to do:**
+- Replace accessibility professionals or their judgment
+- Fully certify WCAG compliance
+- Become a complete browser automation suite
+- Replace manual screen reader testing with NVDA, JAWS, or VoiceOver
+
+**Common AI-generated accessibility failures this plugin targets:**
+- Placeholder text used instead of label elements
+- Icon-only controls with no accessible name
+- Div-based buttons (div with onClick but no role or keyboard support)
+- Inaccessible modal implementations (missing role, focus management, focus trap)
+- Excessive or invalid ARIA usage
+- Skipped heading hierarchy
+- Missing keyboard support
+
+---
+
+## Agent vs. Slash Command — Intentional Distinction
+
+The agent and slash command serve different workflows. They are not duplicates.
+
+**The agent** (`claude agent run a11y-guard`) is designed for:
+- Project-wide audits across all frontend components
+- Structured reporting with a persistent a11y-report.md output file
+- Accessibility review sessions — a deliberate, dedicated audit workflow
+
+**The slash command** (`/wcag-check`) is designed for:
+- Conversational development workflows — used inline while coding
+- Quick feedback on a single file or pasted snippet
+- Rapid iteration: "I just wrote this component, is it accessible?"
+
+The agent writes a file and exits. The slash command responds in chat and keeps
+the conversation going. Both cover the same 8 categories, but their output format,
+scope, and intended moment of use are different.
 
 ---
 
 ## Ordered Requirements
 
-### 1. Define the Plugin Scope
+### 1. Repository Setup
 
-- [ ] Name the plugin: `cve-triage`
-- [ ] Write one sentence describing what it does: _"Runs dependency audit, looks up each CVE, and produces a prioritized triage report with recommended actions — directly in Claude Code."_
-- [ ] Confirm the plugin will NOT require external paid APIs (use public NVD/GHSA endpoints)
-
----
-
-### 2. Set Up the Repository
-
-- [ ] Create directory `CC-Plugin/` (already your working directory)
-- [ ] Initialize a git repo: `git init`
-- [ ] Create the following folder structure:
+- [x] Git repository initialised
+- [x] Folder structure created (see structure below)
 
 ```
-CC-Plugin/
+a11y-guard/
+├── .claude/
+│   ├── agents/
+│   │   └── a11y-guard.md          ← Agent: project-wide audit
+│   ├── commands/
+│   │   └── wcag-check.md          ← Slash command: inline single-file check
+│   ├── hooks/
+│   │   └── on-file-edit.js        ← Hook script (Node.js, cross-platform)
+│   └── settings.json              ← PostToolUse hook wiring
+├── demo/
+│   ├── index.html                 ← Missing lang attribute, outline:none
+│   ├── src/components/
+│   │   ├── LoginForm.tsx          ← Placeholder-as-label, icon-only button
+│   │   ├── DataTable.tsx          ← Icon-only sort buttons, missing table semantics
+│   │   ├── Modal.tsx              ← Div-as-dialog, no focus trap
+│   │   ├── Navigation.jsx         ← Skipped headings, non-descriptive links
+│   │   └── Dashboard.tsx          ← Div-button, excessive ARIA, canvas no alt
+│   ├── package.json
+│   └── README.md
 ├── README.md
 ├── GUIDE.md
-├── .claude/
-│   ├── settings.json          ← hook config lives here
-│   └── agents/
-│       └── cve-triage.md      ← the agent definition
-├── skills/
-│   └── triage-cve.md          ← the skill definition
-└── mcp/                       ← optional: MCP server config (if needed)
+└── REQUIREMENTS.md
 ```
 
 ---
 
-### 3. Build the Skill — `skills/triage-cve.md`
+### 2. Build the Slash Command — `.claude/commands/wcag-check.md`
 
-The skill encapsulates the reusable triage logic Claude applies per CVE.
+**Purpose:** Conversational, inline check. Single file or snippet. Does not write a file.
 
-- [ ] Skill triggers on: user types `/triage-cve` or agent invokes it
-- [ ] Skill must accept: a CVE ID (e.g. `CVE-2023-44487`) or a raw `npm audit --json` / `pip-audit --json` blob
-- [ ] Skill must produce a structured output per finding:
-  - CVE ID + CVSS score (fetched from `https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=<ID>`)
-  - Affected package + current version + fixed version
-  - Exploit availability (check GHSA via `https://api.github.com/advisories?ghsa_id=<ID>`)
-  - Recommended action: one of `PATCH_NOW` / `SCHEDULE` / `ACCEPT_RISK` / `ESCALATE`
-  - One-line rationale for the recommendation
-- [ ] Skill must be callable standalone and from within the agent
-- [ ] Skill file must include: `name`, `description`, `trigger`, `steps` frontmatter
-
----
-
-### 4. Build the Agent — `.claude/agents/cve-triage.md`
-
-The agent orchestrates a full audit-to-report flow.
-
-- [ ] Agent name: `cve-triage`
-- [ ] Agent description: runs dependency audit, triages every finding, writes a report
-- [ ] Agent steps (in order):
-  1. Detect package manager: check for `package.json`, `requirements.txt`, `Pipfile`, `pyproject.toml`
-  2. Run the appropriate audit command (`npm audit --json` or `pip-audit --json --output json`)
-  3. Parse JSON output — extract all CVE IDs and affected packages
-  4. For each CVE, invoke the `triage-cve` skill
-  5. Sort findings by priority: `PATCH_NOW` first, then `ESCALATE`, then `SCHEDULE`, then `ACCEPT_RISK`
-  6. Write output to `cve-triage-report.md` in the project root
-  7. Print a summary table to the terminal (CVE ID | Package | CVSS | Action)
-- [ ] Agent must handle: no vulnerabilities found (exit cleanly), network errors (degrade gracefully), mixed monorepo (multiple package files)
-- [ ] Agent file must include: `name`, `description`, `model`, `tools` frontmatter
+- [ ] Triggers on: `/wcag-check <file>` or `/wcag-check` with pasted code
+- [ ] Checks the same 8 categories as the agent
+- [ ] Output format per finding:
+  ```
+  [SEVERITY] WCAG X.X.X — Short title
+  Issue:  what is technically wrong
+  Impact: who is affected and what they actually experience
+  Fix:    corrected code snippet
+  ```
+- [ ] Ends with summary count and static analysis disclaimer
+- [ ] Includes note directing users to the agent for full project audits
+- [ ] File includes frontmatter: `name`, `description`
 
 ---
 
-### 5. Add a Hook — `.claude/settings.json`
+### 3. Build the Agent — `.claude/agents/a11y-guard.md`
 
-The hook gives the plugin automatic value without the user having to ask.
+**Purpose:** Project-wide audit. Writes a11y-report.md. Not conversational.
 
-- [ ] Add a `PostToolUse` hook that fires after any `Bash` tool call containing `npm install` or `pip install`
-- [ ] Hook behavior: after a package install, automatically invoke the `cve-triage` agent
-- [ ] Hook must be scoped to project settings (`.claude/settings.json`), not global
-- [ ] Hook config shape:
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Packages changed — running CVE triage...' && claude agent run cve-triage"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-- [ ] Verify hook only fires on install commands (use substring match on the tool input)
+- [ ] Agent name: `a11y-guard`
+- [ ] Discovers all `.jsx`, `.tsx`, `.html`, `.vue`, `.svelte` files
+- [ ] Excludes: `node_modules`, `dist`, `build`, `.next`
+- [ ] Analyzes each file across 8 categories:
+  1. Semantic HTML — div-based buttons, missing landmarks
+  2. Keyboard accessibility — onClick without keyboard handler, broken tab order
+  3. Form accessibility — placeholder-as-label, missing error associations
+  4. Screen reader support — missing alt text, aria-hidden on focusable elements
+  5. Accessible naming — icon-only controls, unnamed buttons and links
+  6. Heading structure — skipped levels, multiple H1 elements
+  7. Modal accessibility — missing role, aria-modal, focus management
+  8. ARIA validation — invalid and excessive ARIA usage
+- [ ] Every finding includes: WCAG criterion + Issue + User Impact + Fix
+- [ ] Writes a11y-report.md with summary table, grouped findings, disclaimer
+- [ ] Prints terminal summary on completion
+- [ ] File includes frontmatter: `name`, `description`, `model`, `tools`
 
 ---
 
-### 6. Write the README
+### 4. Add the Hook — `.claude/hooks/on-file-edit.js` + `.claude/settings.json`
 
-The README must enable a fresh-clone install in under 5 minutes.
-
-- [ ] Section: **What this is** (2-3 sentences, mention the persona explicitly)
-- [ ] Section: **Prerequisites** (Claude Code CLI installed, Node.js or Python project)
-- [ ] Section: **Install** — exact commands, no ambiguity:
-  1. Clone the repo
-  2. Copy `.claude/` into the target project root
-  3. Copy `skills/triage-cve.md` into the target project's `.claude/skills/`
-  4. Verify with `claude agent list` — `cve-triage` should appear
-- [ ] Section: **Try it** — one command to run a demo: `claude agent run cve-triage`
-- [ ] Section: **Hook setup** — explain the auto-trigger on package install
-- [ ] Section: **Output** — show a sample `cve-triage-report.md` snippet
-- [ ] Keep total README under 400 words
+- [ ] Hook script: Node.js, no dependencies, fully commented for teaching
+- [ ] Comments explain how Claude Code hook payloads work (stdin JSON)
+- [ ] Checks `tool_input.file_path` for frontend file extensions
+- [ ] Prints one-line reminder to run `/wcag-check` on the modified file
+- [ ] Silent on errors — hook failures must never block Claude Code
+- [ ] Settings wired to `PostToolUse` on both `Edit` and `Write` tool matchers
 
 ---
 
-### 7. Validate on a Fresh Clone
+### 5. Write the README
 
-- [ ] Clone the repo into a new temp directory
-- [ ] Follow README instructions exactly — do not use prior environment knowledge
-- [ ] Confirm: `claude agent list` shows `cve-triage`
-- [ ] Confirm: `claude agent run cve-triage` runs without errors on a project with known vulnerabilities (use a pinned old package for the demo)
-- [ ] Confirm: hook fires after `npm install` or `pip install`
-- [ ] Confirm: `cve-triage-report.md` is written to disk
-- [ ] Fix any step that requires undocumented setup
-
----
-
-### 8. Write the "Build Your Own Plugin" Guide — `GUIDE.md`
-
-One page (≤800 words), written for a security engineer at the same company who wants to build a plugin for a different workflow (e.g. secret scanning, license compliance, SAST triage).
-
-- [ ] Section: **What a Claude Code plugin is** (3 sentences max — agents, skills, hooks, settings)
-- [ ] Section: **Choose your workflow** — prompt: _"Pick one repetitive task you do at least weekly. Can you describe its inputs and outputs in 2 sentences? If yes, it's a plugin candidate."_
-- [ ] Section: **The three-file minimum**:
-  1. An agent file (the orchestrator)
-  2. A skill file (a reusable sub-step)
-  3. A settings.json hook (the trigger)
-- [ ] Section: **Step-by-step scaffold** — 8 numbered steps from "create the folder" to "run `claude agent list`"
-- [ ] Section: **Common mistakes** (3 bullets: wrong file location, missing frontmatter fields, hook not scoped to project)
-- [ ] Section: **Where to go deeper** — link to official Claude Code plugin docs
-- [ ] Tone: peer-to-peer, not tutorial-voice; assume the reader writes code daily
+- [ ] 700–900 words
+- [ ] Sections: Problem / Why I Built This / Who This Is For / How It Works /
+      Accessibility Categories / Prerequisites / Install / Try It /
+      Sample Output / Understanding the Report / Contributing
+- [ ] Agent vs. slash command distinction clearly explained
+- [ ] Fresh-clone install in under 5 minutes
+- [ ] Copy-paste commands for Mac/Linux and Windows
 
 ---
 
-### 9. Prepare the Demo Project
+### 6. Validate on a Fresh Clone
 
-- [ ] Create a small `demo/` folder in the repo containing a `package.json` pinned to a version with known CVEs (e.g. `lodash@4.17.15`, `axios@0.21.1`)
-- [ ] Include a `demo/README.md` explaining: "Use this folder to test the plugin. It intentionally pins vulnerable packages."
-- [ ] Ensure `npm install` inside `demo/` reproduces real `npm audit` findings
-
----
-
-### 10. Record the Loom (≤5 minutes, single take preferred)
-
-Strict time budget — rehearse before recording:
-
-- [ ] **0:00–0:30 — Who & What**: Name the persona, state the pain, state what the plugin does
-- [ ] **0:30–2:00 — Live Demo**:
-  - `cd demo && npm install` → show hook firing automatically
-  - `claude agent run cve-triage` → show agent running, CVEs being looked up
-  - Open `cve-triage-report.md` → show the structured output
-- [ ] **2:00–3:30 — How you built it**:
-  - One interesting decision (e.g. why a skill instead of inline agent logic)
-  - One moment where you had to steer Claude Code (be specific)
-- [ ] **3:30–4:30 — Walking a customer through GUIDE.md**:
-  - Open `GUIDE.md` on screen
-  - Walk through the "three-file minimum" section
-  - Show the scaffold steps
-- [ ] **4:30–5:00 — Wrap**: where to find the repo, one sentence on what you'd build next
-- [ ] Upload to Loom, set to public link, copy URL
+- [ ] Clone to a new temp directory
+- [ ] Follow README exactly — no undocumented steps
+- [ ] `claude agent list` shows `a11y-guard`
+- [ ] `/wcag-check demo/src/components/LoginForm.tsx` returns violations
+- [ ] `claude agent run a11y-guard` inside `demo/` finds 18+ violations, writes a11y-report.md
+- [ ] Hook fires when Claude Code edits a `.tsx` or `.jsx` file
+- [ ] Fix anything that requires setup not in the README
 
 ---
 
-### 11. Final Submission Checklist
+### 7. Write the Guide — `GUIDE.md`
 
-- [ ] Repo is public on GitHub (or tarball ready)
-- [ ] README explains what / who / install / try in under 5 minutes
-- [ ] Plugin installs cleanly from a fresh clone (re-verified in step 7)
-- [ ] `GUIDE.md` is complete and ≤800 words
-- [ ] Loom link is public and ≤5 minutes
-- [ ] Three deliverables in one place: repo URL, guide (in repo), Loom URL
-
----
-
-## Non-Negotiables (Disqualifiers)
-
-- Agent must do real work — no stubs, no "TODO: implement"
-- Plugin must install from README alone — no undocumented steps
-- Loom must be public and watchable without a Loom account
-- Guide must be written for the customer's engineer, not for Anthropic
+- [ ] 800 words or fewer
+- [ ] Written for an a11y engineer at the same company
+- [ ] Peer-to-peer tone — not a tutorial
+- [ ] Examples are accessibility-specific workflows
+- [ ] Covers the three-file minimum
+- [ ] Includes an 8-step copy-paste scaffold
+- [ ] Common mistakes section (3 bullets)
 
 ---
 
-## Suggested Build Order
+### 8. Prepare the Demo Project
 
-1. Demo project (`demo/` folder) — gives you real CVE data to test against immediately
-2. Skill (`triage-cve.md`) — smallest unit, easiest to test in isolation
-3. Agent (`cve-triage.md`) — builds on the skill
-4. Hook (`settings.json`) — wire up the trigger last
-5. README — write after you've run the full flow yourself
-6. GUIDE.md — write after README, reuse structure
-7. Loom — record last, after everything works
+| File | Format | Key violations planted |
+|------|--------|------------------------|
+| `index.html` | HTML | Missing `lang` (3.1.1); global `outline:none` (2.4.7) |
+| `LoginForm.tsx` | TSX | Placeholder-only inputs (1.3.1, 4.1.2); icon-only button (4.1.2); "Click here" link (2.4.4) |
+| `DataTable.tsx` | TSX | Icon-only sort buttons (4.1.2); no caption or scope (1.3.1) |
+| `Modal.tsx` | TSX | No role="dialog" (4.1.2); no focus trap (2.1.2); × close button (4.1.2) |
+| `Navigation.jsx` | JSX | h1 to h3 skip (2.4.6); "Learn more" links (2.4.4) |
+| `Dashboard.tsx` | TSX | div onClick (2.1.1); invalid ARIA (4.1.2); canvas no alt (1.1.1); spinner no aria-live (4.1.3) |
+
+Mix of TSX and JSX is intentional — demonstrates the plugin works with both formats.
+
+---
+
+### 9. Record the Loom (5 minutes maximum)
+
+- [ ] 0:00–0:30 — Persona, the vibe-coded UI problem, personal motivation
+- [ ] 0:30–2:00 — Hook fires, /wcag-check Modal.tsx, claude agent run a11y-guard, open a11y-report.md
+- [ ] 2:00–3:30 — How it was built: static analysis decision, steering Claude Code for user impact
+- [ ] 3:30–4:30 — GUIDE.md walkthrough: three-file minimum, 8-step scaffold
+- [ ] 4:30–5:00 — Repo link, what to build next (PR-diff mode)
+
+---
+
+### 10. Final Submission Checklist
+
+- [ ] Repo public on GitHub
+- [ ] README: what / who / install / try in under 5 minutes
+- [ ] Fresh-clone install verified
+- [ ] GUIDE.md is 800 words or fewer
+- [ ] Loom is public and 5 minutes or under
+- [ ] Three deliverables linked: repo URL, guide (in repo), Loom URL
+
+---
+
+## Non-Negotiables
+
+- Agent does real work — no stubs, no TODO placeholders
+- Plugin installs from README alone — no undocumented steps
+- Loom is public and watchable without a Loom account
+- Guide is written for the accessibility engineer, not for Anthropic
+
+---
+
+## Coding Standards
+
+All code in this plugin follows these standards:
+
+**Simple and human-readable.** No clever one-liners. If a longer version is clearer,
+use it. Variable names are full English words (filePath, not fp; payload, not p).
+
+**Document the WHY, not the WHAT.** Comments explain why a decision was made, not
+just what the line does. "We collect stdin in chunks because Node.js receives stream
+data in pieces, not all at once" is useful. "Collects data" is not.
+
+**Written to teach.** Every file in .claude/ is a teaching artifact. A developer
+reading it for the first time should finish understanding not just what it does but
+why it is structured the way it is.
+
+**Demo components are teaching examples.** Each has a comment block at the top listing
+every intentional violation with its WCAG criterion and a plain-English explanation
+of why it matters.

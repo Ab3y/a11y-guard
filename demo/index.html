@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--
+  a11y-guard Demo: index.html
+
+  This file intentionally contains accessibility violations for demonstration
+  purposes. In a real project, these would be bugs to find and fix.
+
+  ─────────────────────────────────────────────────────────────────────────────
+  VIOLATION 1: Missing lang attribute on the <html> element
+  ─────────────────────────────────────────────────────────────────────────────
+  WCAG Criterion: 3.1.1 Language of Page (Level AA — Major)
+
+  Why it matters:
+  Screen readers use the lang attribute to determine which language rules and
+  pronunciation engine to apply. If lang is missing, a French-language screen
+  reader may attempt to read English text using French phonetics, making the
+  content difficult or impossible to understand. This is one of the simplest
+  attributes to add and one of the most commonly forgotten.
+
+  The fix: <html lang="en">
+
+  ─────────────────────────────────────────────────────────────────────────────
+  VIOLATION 2: outline:none applied globally in CSS
+  ─────────────────────────────────────────────────────────────────────────────
+  WCAG Criterion: 2.4.7 Focus Visible (Level AA — Major)
+
+  Why it matters:
+  Keyboard users navigate by pressing Tab. The browser's default focus indicator
+  — the visible outline or ring around a focused element — is the only visual
+  cue that tells a keyboard user where they currently are on the page.
+
+  Removing outline globally with *:focus { outline: none; } makes the page
+  effectively unusable for keyboard-only users. They can still navigate with Tab,
+  but they cannot see which element is currently focused.
+
+  This is an extremely common pattern in AI-generated CSS. Developers often
+  remove the outline because it looks "ugly" in a visual design, without
+  realising it serves a critical accessibility function.
+
+  The fix: Either remove this rule entirely, or replace it with a custom
+  focus indicator: *:focus { outline: 2px solid #005fcc; outline-offset: 2px; }
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme Dashboard — a11y-guard Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* VIOLATION: This removes the focus indicator from every interactive element.
+       Keyboard users cannot see where they are on the page when tabbing through it. */
+    *:focus {
+      outline: none;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f5f5f5;
+      color: #333333;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <p>This is the a11y-guard demo shell. See the components in src/components/ for more violations.</p>
+  </div>
+</body>
+</html>
