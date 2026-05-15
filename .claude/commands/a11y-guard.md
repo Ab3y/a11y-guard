@@ -1,9 +1,9 @@
 ---
-name: wcag-check
+name: a11y-guard
 description: Quick inline accessibility check for a single file or snippet — conversational feedback while you code
 ---
 
-# wcag-check — Inline Accessibility Checker
+# a11y-guard — Inline Accessibility Checker
 
 This is a slash command for quick, conversational accessibility feedback while you
 are actively writing or reviewing code.
@@ -11,7 +11,7 @@ are actively writing or reviewing code.
 
 ## When to use this command vs. the agent
 
-Use `/wcag-check` when:
+Use `/a11y-guard` when:
 - You just finished writing a component and want a quick review before moving on
 - You are in a conversation about a specific file and want inline feedback
 - You want to paste a code snippet and ask "is this accessible?"
@@ -27,14 +27,14 @@ Use `claude agents run a11y-guard` instead when:
 Three ways to use it:
 
   1. Check a specific file by path:
-     /wcag-check src/components/LoginForm.tsx
+     /a11y-guard src/components/LoginForm.tsx
 
   2. Check a code snippet — paste code after the command:
-     /wcag-check
+     /a11y-guard
      [paste your component code here]
 
   3. Check the file currently being discussed in the conversation:
-     /wcag-check
+     /a11y-guard
 
 
 ---

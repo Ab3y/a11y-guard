@@ -21,10 +21,8 @@ Ask yourself: can I describe this task in two sentences — what goes in, and wh
 If yes, it is a plugin candidate. Some accessibility-specific examples:
 
 - "I paste a VPAT section and get a gap analysis against WCAG 2.1 AA." ✓
-- "I give it a pull request diff and it flags which changed components introduced new
-  accessibility regressions." ✓
-- "I point it at a component and it generates NVDA and JAWS test cases for the most
-  likely screen reader interactions." ✓
+- "I give it a pull request diff and it flags which changed components introduced new accessibility regressions." ✓
+- "I point it at a component and it generates NVDA and JAWS test cases for the most likely screen reader interactions." ✓
 
 If you cannot describe the inputs and outputs clearly, the task is probably not ready
 to automate yet. Define it first, then build the plugin.

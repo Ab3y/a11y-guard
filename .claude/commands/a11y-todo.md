@@ -9,7 +9,7 @@ Use this command to track accessibility issues you want to fix later rather than
 The pre-commit hook reads `a11y-todos.md` automatically before every `git commit` and
 surfaces any open items as a reminder so nothing ships overlooked.
 
-For an immediate accessibility check on a file, use `/wcag-check` instead.
+For an immediate accessibility check on a file, use `/a11y-guard` instead.
 For a full project audit with a persistent report, run `claude agents run a11y-guard`.
 
 ---
@@ -42,7 +42,7 @@ When you run this command:
    # a11y-guard — Deferred Accessibility Issues
 
    Issues flagged during development that have not yet been addressed.
-   Run /wcag-check on any open item before shipping.
+   Run /a11y-guard on any open item before shipping.
 
    ## Open
 
@@ -100,7 +100,7 @@ When you run this command:
 # a11y-guard — Deferred Accessibility Issues
 
 Issues flagged during development that have not yet been addressed.
-Run /wcag-check on any open item before shipping.
+Run /a11y-guard on any open item before shipping.
 
 ## Open
 
