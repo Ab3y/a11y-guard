@@ -1,5 +1,5 @@
 /**
- * a11y-guard: Hook Script
+ * a11y-check: Hook Script
  * File: .claude/hooks/on-file-edit.js
  *
  * PURPOSE
@@ -84,7 +84,7 @@ process.stdin.on('end', function() {
     const filePath = (payload.tool_input || {}).file_path || '';
 
     // STEP 4: Check whether the modified file is a frontend component type
-    // that a11y-guard covers.
+    // that a11y-check covers.
     //
     // We use a regular expression to test the file extension:
     //   \. matches a literal dot
@@ -121,7 +121,7 @@ process.stdin.on('end', function() {
       // so it does not get lost in other Claude Code output.
       process.stdout.write(
         '\n─────────────────────────────────────────\n' +
-        'a11y-guard: ' + filename + ' was modified.\n' +
+        'a11y-check: ' + filename + ' was modified.\n' +
         'Check accessibility now, defer it, or skip:\n' +
         '  • Fix now  → /wcag-check ' + filePath + '\n' +
         '  • Defer    → /a11y-todo add ' + filename + ' — describe the issue\n' +

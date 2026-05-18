@@ -1,7 +1,7 @@
 {
-  "name": "a11y-guard-demo",
+  "name": "a11y-check-demo",
   "version": "1.0.0",
-  "description": "Demo project for a11y-guard. Contains intentional WCAG violations for testing and demonstration. You do not need to build or run this project — the components are used for static analysis.",
+  "description": "Demo project for a11y-check. Contains intentional WCAG violations for testing and demonstration. You do not need to build or run this project — the components are used for static analysis.",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",

@@ -1,4 +1,4 @@
-# A11y-Guard
+# A11y-Check
 
 A Claude Code plugin that reviews AI-generated frontend code for accessibility issues,
 explains who is affected and how, and suggests practical fixes — without leaving your editor.
@@ -27,7 +27,7 @@ Enterprise accessibility teams are often responsible for reviewing hundreds of c
 across many repositories with limited staffing. Issues discovered late — after development,
 after QA, after a legal complaint — are significantly more expensive to fix.
 
-A11y-Guard shifts accessibility review earlier into the development workflow.
+A11y-Check shifts accessibility review earlier into the development workflow.
 
 
 ---
@@ -68,7 +68,7 @@ repetitive mechanical part.
 ### The Agent — for audits and review sessions
 
 ```bash
-claude agents run a11y-guard
+claude agents run a11y-check
 ```
 
 Scans every `.jsx`, `.tsx`, `.html`, `.vue`, and `.svelte` file in the project across
@@ -140,22 +140,40 @@ Both the agent and the slash command check these 8 categories:
 
 ## Install
 
+### Option A — Marketplace install (recommended)
+
+Add the marketplace and install the plugin in two commands:
+
+```bash
+/plugin marketplace add Ab3y/a11y-check
+/plugin install a11y-check@a11y-check
+```
+
+Claude Code will fetch the plugin, wire up the hooks, and register the agent and
+slash commands automatically. To get updates when a new version ships:
+
+```bash
+/plugin marketplace update a11y-check
+```
+
+### Option B — Manual install (copy the folder)
+
 **Step 1 — Clone this repo**
 
 ```bash
-git clone https://github.com/Ab3y/a11y-guard.git
+git clone https://github.com/Ab3y/a11y-check.git
 ```
 
 **Step 2 — Copy the plugin into your project**
 
 Mac / Linux:
 ```bash
-cp -r a11y-guard/.claude /path/to/your-project/.claude
+cp -r a11y-check/.claude /path/to/your-project/.claude
 ```
 
 Windows (PowerShell):
 ```powershell
-Copy-Item -Recurse a11y-guard\.claude your-project\.claude
+Copy-Item -Recurse a11y-check\.claude your-project\.claude
 ```
 
 The `.claude/` folder contains the agent, slash command, hook script, and settings.
@@ -168,7 +186,7 @@ cd your-project
 claude agents list
 ```
 
-You should see `a11y-guard` in the list.
+You should see `a11y-check` in the list.
 
 
 ---
@@ -178,7 +196,7 @@ You should see `a11y-guard` in the list.
 
 **Run a full project audit:**
 ```bash
-claude agents run a11y-guard
+claude agents run a11y-check
 ```
 This scans every frontend file and writes `a11y-report.md` to your project root.
 
@@ -190,7 +208,7 @@ This scans every frontend file and writes `a11y-report.md` to your project root.
 **Try the demo project:**
 ```bash
 cd demo
-claude agents run a11y-guard
+claude agents run a11y-check
 ```
 The `demo/` folder contains intentional violations. You should see approximately
 18–20 findings across 6 files.
@@ -246,7 +264,7 @@ https://www.loom.com/share/98476fd3e2e54417a19cbe27ed73362b
 ## Contributing and Extending
 
 - To add a new accessibility check, extend the agent prompt in
-  `.claude/agents/a11y-guard.md`
-- To build a different plugin workflow for your team, see `GUIDE.md`
+  `.claude/agents/a11y-check.md`
+- To build your own Claude Code plugin, follow the steps in [CCPlugin_Guide.md](CCPlugin_Guide.md)
 - Pull requests welcome — especially for Vue and Svelte-specific patterns and
   additional ARIA validation rules

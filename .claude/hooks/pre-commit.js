@@ -1,5 +1,5 @@
 /**
- * a11y-guard: Pre-Commit Hook Script
+ * a11y-check: Pre-Commit Hook Script
  * File: .claude/hooks/pre-commit.js
  *
  * PURPOSE
@@ -115,7 +115,7 @@ process.stdin.on('end', function() {
 
       process.stdout.write(
         '\n─────────────────────────────────────────\n' +
-        'a11y-guard: No deferred accessibility issues. Good to ship.\n' +
+        'a11y-check: No deferred accessibility issues. Good to ship.\n' +
         '─────────────────────────────────────────\n'
       );
 
@@ -126,7 +126,7 @@ process.stdin.on('end', function() {
 
       process.stdout.write(
         '\n─────────────────────────────────────────\n' +
-        'a11y-guard: ' + count + ' deferred accessibility ' + plural + ' outstanding:\n\n' +
+        'a11y-check: ' + count + ' deferred accessibility ' + plural + ' outstanding:\n\n' +
         openItems.map(function(item) { return '  ' + item.trim(); }).join('\n') + '\n\n' +
         'Run /wcag-check on these files before committing, or accept the known risk.\n' +
         '─────────────────────────────────────────\n'

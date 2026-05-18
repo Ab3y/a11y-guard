@@ -1,9 +1,9 @@
 ---
-name: a11y-guard
+name: a11y-check
 description: Quick inline accessibility check for a single file or snippet — conversational feedback while you code
 ---
 
-# a11y-guard — Inline Accessibility Checker
+# a11y-check — Inline Accessibility Checker
 
 This is a slash command for quick, conversational accessibility feedback while you
 are actively writing or reviewing code.
@@ -11,12 +11,12 @@ are actively writing or reviewing code.
 
 ## When to use this command vs. the agent
 
-Use `/a11y-guard` when:
+Use `/a11y-check` when:
 - You just finished writing a component and want a quick review before moving on
 - You are in a conversation about a specific file and want inline feedback
 - You want to paste a code snippet and ask "is this accessible?"
 
-Use `claude agents run a11y-guard` instead when:
+Use `claude agents run a11y-check` instead when:
 - You want to audit an entire project across all frontend files
 - You need a written report file (a11y-report.md) to share with your team or store in the repo
 - You are running a formal accessibility review session
@@ -27,14 +27,14 @@ Use `claude agents run a11y-guard` instead when:
 Three ways to use it:
 
   1. Check a specific file by path:
-     /a11y-guard src/components/LoginForm.tsx
+     /a11y-check src/components/LoginForm.tsx
 
   2. Check a code snippet — paste code after the command:
-     /a11y-guard
+     /a11y-check
      [paste your component code here]
 
   3. Check the file currently being discussed in the conversation:
-     /a11y-guard
+     /a11y-check
 
 
 ---

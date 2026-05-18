@@ -113,7 +113,7 @@ Keep it simple and always exit with code 0 so failures are silent.
 ```
 
 `PreToolUse` fires *before* a tool runs — right for pre-commit checks or blocking
-dangerous operations. a11y-guard uses this on the `Bash` matcher to surface deferred
+dangerous operations. a11y-check uses this on the `Bash` matcher to surface deferred
 accessibility todos before every `git commit`. The hook inspects the command string
 and exits silently for any command that is not a git commit:
 ```json
@@ -159,7 +159,7 @@ the project-level file unless you genuinely want it everywhere.
 
 - [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code) —
   full reference for agents, slash commands, hooks, and settings
-- The a11y-guard source in this repo — read `.claude/agents/a11y-guard.md` and
+- The a11y-check source in this repo — read `.claude/agents/a11y-check.md` and
   trace through the logic to see how a real agent is structured
 - The hook script at `.claude/hooks/on-file-edit.js` — fully commented, explains
   exactly how Claude Code hook payloads work

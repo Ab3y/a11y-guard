@@ -1,5 +1,5 @@
 /**
- * a11y-guard Demo: DataTable.tsx
+ * a11y-check Demo: DataTable.tsx
  *
  * This component intentionally contains accessibility violations for demonstration
  * purposes. In a real project, these would be bugs to find and fix.

@@ -7,3 +7,4 @@ build/
 Thumbs.db
 **/.claude/settings.local.json
 .obsidian
+REQUIREMENTS.md

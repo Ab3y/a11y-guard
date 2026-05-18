@@ -9,8 +9,8 @@ Use this command to track accessibility issues you want to fix later rather than
 The pre-commit hook reads `a11y-todos.md` automatically before every `git commit` and
 surfaces any open items as a reminder so nothing ships overlooked.
 
-For an immediate accessibility check on a file, use `/a11y-guard` instead.
-For a full project audit with a persistent report, run `claude agents run a11y-guard`.
+For an immediate accessibility check on a file, use `/a11y-check` instead.
+For a full project audit with a persistent report, run `claude agents run a11y-check`.
 
 ---
 
@@ -39,10 +39,10 @@ When you run this command:
 1. Read `a11y-todos.md` from the project root (or note that it does not exist yet)
 2. If the file does not exist, create it with this structure:
    ```
-   # a11y-guard — Deferred Accessibility Issues
+   # a11y-check — Deferred Accessibility Issues
 
    Issues flagged during development that have not yet been addressed.
-   Run /a11y-guard on any open item before shipping.
+   Run /a11y-check on any open item before shipping.
 
    ## Open
 
@@ -97,10 +97,10 @@ When you run this command:
 ## The a11y-todos.md format
 
 ```markdown
-# a11y-guard — Deferred Accessibility Issues
+# a11y-check — Deferred Accessibility Issues
 
 Issues flagged during development that have not yet been addressed.
-Run /a11y-guard on any open item before shipping.
+Run /a11y-check on any open item before shipping.
 
 ## Open
 

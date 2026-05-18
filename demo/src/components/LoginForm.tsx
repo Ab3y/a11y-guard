@@ -1,5 +1,5 @@
 /**
- * a11y-guard Demo: LoginForm.tsx
+ * a11y-check Demo: LoginForm.tsx
  *
  * This component intentionally contains accessibility violations for demonstration
  * purposes. In a real project, these would be bugs to find and fix.

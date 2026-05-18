@@ -1,0 +1,31 @@
+{
+  "name": "a11y-check",
+  "description": "Scans frontend components for WCAG 2.1 AA violations, explains who is affected and how, suggests minimal fixes, and writes a structured audit report — without leaving Claude Code.",
+  "version": "1.0.0",
+  "commands": ["./.claude/commands/"],
+  "agents": ["./.claude/agents/"],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/on-file-edit.js\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/pre-commit.js\""
+          }
+        ]
+      }
+    ]
+  }
+}

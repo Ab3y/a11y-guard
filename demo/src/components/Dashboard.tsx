@@ -1,5 +1,5 @@
 /**
- * a11y-guard Demo: Dashboard.tsx
+ * a11y-check Demo: Dashboard.tsx
  *
  * This component represents a typical AI-generated dashboard page.
  * It intentionally contains accessibility violations for demonstration

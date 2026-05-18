@@ -1,7 +1,7 @@
-# a11y-guard Demo Project
+# a11y-check Demo Project
 
 This folder contains a small frontend project with **intentional accessibility violations**
-for testing and demonstrating the a11y-guard plugin.
+for testing and demonstrating the a11y-check plugin.
 
 You do not need to build or run this project. The components are used for static analysis
 by the agent and slash command.
@@ -29,7 +29,7 @@ TypeScript and JavaScript React in the same project.
 Run the agent from this directory:
 
 ```bash
-claude agents run a11y-guard
+claude agents run a11y-check
 ```
 
 Expected output: approximately 18–20 violations across 6 files, with an `a11y-report.md`

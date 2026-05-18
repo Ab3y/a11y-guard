@@ -1,8 +1,8 @@
 /**
- * a11y-guard Demo: Navigation.jsx
+ * a11y-check Demo: Navigation.jsx
  *
  * This file is intentionally kept as plain JavaScript React (.jsx) rather than
- * TypeScript React (.tsx). This demonstrates that a11y-guard works with both
+ * TypeScript React (.tsx). This demonstrates that a11y-check works with both
  * file formats in the same project.
  *
  * This component intentionally contains accessibility violations for demonstration

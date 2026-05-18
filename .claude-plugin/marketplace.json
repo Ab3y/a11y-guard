@@ -1,0 +1,24 @@
+{
+  "name": "a11y-check",
+  "description": "Accessibility checking tools for Claude Code — catches WCAG 2.1 AA violations in AI-generated frontend code.",
+  "owner": {
+    "name": "Abe",
+    "email": "jennyandabey@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "a11y-check",
+      "source": "./",
+      "description": "Scans frontend components for WCAG 2.1 AA violations, explains who is affected and how, suggests minimal fixes, and writes a structured audit report — without leaving Claude Code.",
+      "author": {
+        "name": "Abe",
+        "email": "jennyandabey@gmail.com"
+      },
+      "homepage": "https://github.com/Ab3y/a11y-check",
+      "repository": "https://github.com/Ab3y/a11y-check",
+      "license": "MIT",
+      "keywords": ["accessibility", "a11y", "wcag", "frontend", "react"],
+      "category": "code-quality"
+    }
+  ]
+}
